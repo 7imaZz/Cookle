@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cookle</string>
+    <string name="food_image">Food Image</string>
+    <string name="no_food_with_this_title">No Food With This Title</string>
 </resources>

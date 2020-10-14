@@ -22,8 +22,8 @@ public class FoodViewModel extends ViewModel {
     private static final String TAG = "FoodViewModel";
     public MutableLiveData<ArrayList<Recipe>> liveData = new MutableLiveData<>();
 
-    public void getFood(){
-        FoodClient.getInstance().getFood()
+    public void getFood(String food){
+        FoodClient.getInstance().getFood(food)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Food>() {

@@ -12,7 +12,7 @@ public class FoodClient {
 
     private static final String BASE_URL = "http://recipesapi.herokuapp.com/api/";
     private FoodApi foodApi;
-    public static FoodClient instance;
+    private static FoodClient instance;
 
     private FoodClient() {
         this.foodApi = new Retrofit.Builder()
@@ -30,7 +30,7 @@ public class FoodClient {
         return instance;
     }
 
-    public Observable<Food> getFood(){
-        return foodApi.getFood();
+    public Observable<Food> getFood(String food){
+        return foodApi.getFood(food);
     }
 }
