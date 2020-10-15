@@ -2,6 +2,7 @@ package com.example.cookle.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +34,14 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         }
     }
 
+
     private ArrayList<Recipe> recipes = new ArrayList<>();
     private Context context;
+    private RecyclerViewOnItemClick recyclerViewOnItemClick;
 
-    public FoodAdapter(Context context) {
+    public FoodAdapter(Context context, RecyclerViewOnItemClick recyclerViewOnItemClick) {
         this.context = context;
+        this.recyclerViewOnItemClick = recyclerViewOnItemClick;
     }
 
     public void setRecipes(ArrayList<Recipe> recipes) {
@@ -68,14 +72,31 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .fitCenter()
                 .placeholder(R.drawable.food_placeholer)
                 .into(holder.foodImageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewOnItemClick.onItemClick(position);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                recyclerViewOnItemClick.onLongItemClick(position);
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return recipes.size();
     }
 
     public void clearRecipes(){
         recipes.clear();
     }
-    @Override
-    public int getItemCount() {
-        return recipes.size();
-    }
+
 
 }

@@ -6,9 +6,11 @@ public class Recipe {
     private String title;
     private String image_url;
     private String publisher;
+    private String recipe_id;
     private Double social_rank;
 
-    public Recipe(String _id, String title, String image_url, String publisher, Double social_rank) {
+
+    public Recipe(String _id, String title, String image_url, String publisher, String recipe_id, Double social_rank) {
         this._id = _id;
         this.title = title;
         this.image_url = image_url;
@@ -54,5 +56,13 @@ public class Recipe {
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public String getRecipe_id() {
+        return recipe_id;
+    }
+
+    public void setRecipe_id(String recipe_id) {
+        this.recipe_id = recipe_id;
     }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/food_nav"
+    app:startDestination="@id/mainFoodFragment">
+
+    <fragment
+        android:id="@+id/mainFoodFragment"
+        android:name="com.example.cookle.ui.MainFoodFragment"
+        android:label="fragment_main_food"
+        tools:layout="@layout/fragment_main_food" >
+        <action
+            android:id="@+id/action_mainFoodFragment_to_foodDetailsFragment"
+            app:destination="@id/foodDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodDetailsFragment"
+        android:name="com.example.cookle.ui.FoodDetailsFragment"
+        android:label="fragment_food_details"
+        tools:layout="@layout/fragment_food_details" >
+        <action
+            android:id="@+id/action_foodDetailsFragment_to_mainFoodFragment"
+            app:destination="@id/mainFoodFragment" />
+    </fragment>
+</navigation>
