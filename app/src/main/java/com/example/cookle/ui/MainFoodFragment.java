@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.cookle.R;
 import com.example.cookle.adapters.FoodAdapter;
 import com.example.cookle.adapters.RecyclerViewOnItemClick;
+import com.example.cookle.network.InternetConnection;
 import com.example.cookle.pojo.Recipe;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
     private FoodAdapter adapter;
     private ProgressBar progressBar;
     private LinearLayout noFoodLinearLayout;
+    private LinearLayout noInternetLinearLayout;
     private SwipeRefreshLayout refresher;
     private ArrayList<Recipe> recipes;
     private RecyclerView foodRecyclerView;
@@ -59,7 +61,6 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         SharedPreferences sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE);
         int pos = sharedPref.getInt("rPos", 0);
 
@@ -69,6 +70,7 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         noFoodLinearLayout = requireActivity().findViewById(R.id.no_foo_ll);
         refresher = requireActivity().findViewById(R.id.refresher);
         foodRecyclerView = requireActivity().findViewById(R.id.food_rv);
+        noInternetLinearLayout = requireActivity().findViewById(R.id.no_internet_ll);
 
 
         recipes = new ArrayList<>();
@@ -78,6 +80,9 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         foodRecyclerView.setAdapter(adapter);
         foodRecyclerView.scrollToPosition(pos);
 
+        if(!InternetConnection.checkConnection(requireContext())){
+            showNoConnectionView();
+        }
 
         expandSearchView();
         observeFood();
@@ -86,6 +91,12 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                if(!InternetConnection.checkConnection(requireContext())){
+                    showNoConnectionView();
+                    return false;
+                }
+
                 progressBar.setVisibility(View.VISIBLE);
                 noFoodLinearLayout.setVisibility(View.GONE);
                 ((MainActivity) requireActivity()).foodViewModel.getFood(query);
@@ -100,6 +111,10 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         });
 
         refresher.setOnRefreshListener(() -> {
+            if(!InternetConnection.checkConnection(requireContext())){
+                showNoConnectionView();
+                return;
+            }
             if (!searchView.getQuery().toString().isEmpty()){
                 ((MainActivity) requireActivity()).foodViewModel.getFood(searchView.getQuery().toString());
             }else {
@@ -122,6 +137,7 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
                 noFoodLinearLayout.setVisibility(View.GONE);
+                noInternetLinearLayout.setVisibility(View.GONE);
             }else{
                 noFoodLinearLayout.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
@@ -156,5 +172,12 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
     @Override
     public void onLongItemClick(int position) {
         Toast.makeText(requireContext(), recipes.get(position).getPublisher(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void showNoConnectionView(){
+        noInternetLinearLayout.setVisibility(View.VISIBLE);
+        noFoodLinearLayout.setVisibility(View.GONE);
+        adapter.clearRecipes();
+        refresher.setRefreshing(false);
     }
 }
