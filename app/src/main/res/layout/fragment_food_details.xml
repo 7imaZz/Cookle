@@ -1,14 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.FoodDetailsFragment">
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:visibility="visible"
-        android:id="@+id/youtube_player"/>
 
-</FrameLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="10dp"
+            android:background="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@android:color/transparent">
+
+                <ImageView
+                    android:id="@+id/food_details_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_240sdp"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/food_image"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/food_title_details_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="#000"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/publish_details_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/social_rank_details_tv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="end"
+                        android:gravity="end"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ingredients"
+                    android:textSize="16sp"
+                    android:layout_margin="10dp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/ingredients_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+</ScrollView>

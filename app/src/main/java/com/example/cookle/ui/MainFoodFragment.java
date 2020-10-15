@@ -139,6 +139,9 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         Bundle bundle = new Bundle();
         bundle.putString("recipe_id", recipes.get(position).getRecipe_id());
         bundle.putString("food_title", recipes.get(position).getTitle());
+        bundle.putString("image_url", recipes.get(position).getImage_url());
+        bundle.putString("social_rank", recipes.get(position).getSocial_rank().intValue()+"");
+        bundle.putString("publisher", recipes.get(position).getPublisher());
 
         int pos = ((LinearLayoutManager) Objects.requireNonNull(foodRecyclerView.getLayoutManager())).findFirstVisibleItemPosition();
 
@@ -146,8 +149,6 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("rPos", pos);
         editor.apply();
-
-        ((MainActivity) requireActivity()).foodViewModel.getVideo("how to make"+recipes.get(position).getTitle());
 
         Navigation.findNavController(requireView()).navigate(R.id.action_mainFoodFragment_to_foodDetailsFragment, bundle);
     }

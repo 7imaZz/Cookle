@@ -2,6 +2,8 @@ package com.example.cookle.repository;
 
 import com.example.cookle.network.FoodApi;
 import com.example.cookle.pojo.Food;
+import com.example.cookle.pojo.Ingredient;
+import com.example.cookle.pojo.RecipeIngredient;
 
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import io.reactivex.rxjava3.core.Observable;
@@ -32,5 +34,8 @@ public class FoodClient {
 
     public Observable<Food> getFood(String food){
         return foodApi.getFood(food);
+    }
+    public Observable<Ingredient> getIngredient(String rId){
+        return foodApi.getRecipeIngredient(rId);
     }
 }

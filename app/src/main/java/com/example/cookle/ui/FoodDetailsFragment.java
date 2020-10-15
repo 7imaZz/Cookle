@@ -13,14 +13,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.cookle.R;
 import com.example.cookle.viewmodel.FoodViewModel;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
-import java.util.Objects;
+import java.util.ArrayList;
 
 
 /**
@@ -28,7 +28,8 @@ import java.util.Objects;
  */
 public class FoodDetailsFragment extends Fragment {
 
-    private YouTubePlayerView youTubePlayerView;
+    private ImageView foodImageView;
+    private TextView foodTitleTextView, foodSocialRankTextView, foodPublisherTextView, ingredientsTextView;
 
     public FoodDetailsFragment() {
         // Required empty public constructor
@@ -47,31 +48,35 @@ public class FoodDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //Receive Arguments
         Bundle bundle = requireArguments();
         String recipeId = bundle.getString("recipe_id");
+        String imageUrl = bundle.getString("image_url");
         String foodTitle = bundle.getString("food_title");
+        String socialRank = bundle.getString("social_rank");
+        String publisher = bundle.getString("publisher");
 
-        youTubePlayerView = requireActivity().findViewById(R.id.youtube_player);
-        requireActivity().getLifecycle().addObserver(youTubePlayerView);
 
+        ((MainActivity)requireActivity()).foodViewModel.getIngredients(recipeId);
+
+        //Initialize Views
+        foodImageView = requireView().findViewById(R.id.food_details_img);
+        foodTitleTextView = requireView().findViewById(R.id.food_title_details_tv);
+        foodPublisherTextView = requireView().findViewById(R.id.publish_details_tv);
+        foodSocialRankTextView = requireView().findViewById(R.id.social_rank_details_tv);
+        ingredientsTextView = requireView().findViewById(R.id.ingredients_tv);
+
+
+        setupViews(imageUrl, foodTitle, socialRank, publisher);
         onBackButtonClicked(view);
 
-
-        ((MainActivity) requireActivity()).foodViewModel.videoLiveData.observe(requireActivity(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                    @Override
-                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                        if (s!=null)
-                            youTubePlayer.loadVideo(s, 0);
-                    }
-                });
+        ((MainActivity)requireActivity()).foodViewModel.ingredientsLiveData.observe(requireActivity(), ingredients -> {
+            StringBuilder t = new StringBuilder();
+            for (int i=0; i<ingredients.size(); i++){
+                t.append("- ").append(ingredients.get(i)).append("\n");
             }
+            ingredientsTextView.setText(t.toString());
         });
-
-
-
 
     }
 
@@ -80,11 +85,23 @@ public class FoodDetailsFragment extends Fragment {
         view.requestFocus();
         view.setOnKeyListener((v, keyCode, event) -> {
             if( keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-                youTubePlayerView.release();
+                ((MainActivity)requireActivity()).foodViewModel.ingredientsLiveData.postValue(new ArrayList<>());
                 Navigation.findNavController(requireView()).navigate(R.id.action_foodDetailsFragment_to_mainFoodFragment);
                 return true;
             }
             return false;
         });
+    }
+
+    private void setupViews(String imageUrl, String title, String socialRank, String publisher){
+
+        Glide.with(requireContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.food_placeholer)
+                .into(foodImageView);
+
+        foodTitleTextView.setText(title);
+        foodSocialRankTextView.setText(socialRank);
+        foodPublisherTextView.setText(publisher);
     }
 }

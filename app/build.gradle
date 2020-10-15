@@ -67,7 +67,9 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$room_version"
 
     // Navigation
+    //noinspection GradleDependency
     implementation "androidx.navigation:navigation-fragment:$nav_version"
+    //noinspection GradleDependency
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     // Glide
@@ -79,8 +81,6 @@ dependencies {
 
     //swipe refresher
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-
-    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
 
     implementation 'com.android.support:multidex:1.0.3'
 
