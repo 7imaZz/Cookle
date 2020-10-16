@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.cookle.R;
 import com.example.cookle.adapters.FoodAdapter;
@@ -79,6 +78,7 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
 
         foodRecyclerView.setAdapter(adapter);
         foodRecyclerView.scrollToPosition(pos);
+
 
         if(!InternetConnection.checkConnection(requireContext())){
             showNoConnectionView();
@@ -171,12 +171,12 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
 
     @Override
     public void onLongItemClick(int position) {
-        Toast.makeText(requireContext(), recipes.get(position).getPublisher(), Toast.LENGTH_SHORT).show();
     }
 
     private void showNoConnectionView(){
         noInternetLinearLayout.setVisibility(View.VISIBLE);
         noFoodLinearLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
         adapter.clearRecipes();
         refresher.setRefreshing(false);
     }
