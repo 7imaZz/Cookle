@@ -14,26 +14,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.cookle.R;
 import com.example.cookle.adapters.FoodAdapter;
+import com.example.cookle.adapters.FoodRecyclerOnFavImageClick;
 import com.example.cookle.adapters.RecyclerViewOnItemClick;
 import com.example.cookle.network.InternetConnection;
 import com.example.cookle.pojo.Recipe;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClick {
+public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClick, FoodRecyclerOnFavImageClick {
 
     private SearchView searchView;
     private FoodAdapter adapter;
@@ -43,6 +49,8 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
     private SwipeRefreshLayout refresher;
     private ArrayList<Recipe> recipes;
     private RecyclerView foodRecyclerView;
+
+    private Set<String> favs;
 
     public MainFoodFragment() {
         // Required empty public constructor
@@ -60,9 +68,16 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         SharedPreferences sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE);
         int pos = sharedPref.getInt("rPos", 0);
+        favs = new HashSet<>();
 
+        ArrayList<Recipe> favRecipes = (ArrayList<Recipe>)
+                ((MainActivity)requireActivity()).foodViewModel.getAllFav(requireContext());
+        for (int i=0; i<favRecipes.size(); i++){
+            favs.add(favRecipes.get(i).get_id());
+        }
 
         searchView = requireActivity().findViewById(R.id.search_sv);
         progressBar = requireActivity().findViewById(R.id.pb);
@@ -71,9 +86,11 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         foodRecyclerView = requireActivity().findViewById(R.id.food_rv);
         noInternetLinearLayout = requireActivity().findViewById(R.id.no_internet_ll);
 
+        ((MainActivity)requireActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
+
 
         recipes = new ArrayList<>();
-        adapter = new FoodAdapter(getContext(), this);
+        adapter = new FoodAdapter(getContext(), (HashSet<String>)favs,this, this);
 
 
         foodRecyclerView.setAdapter(adapter);
@@ -123,6 +140,24 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
             }
             observeFood();
             refresher.setRefreshing(false);
+        });
+
+        ((MainActivity)requireActivity()).bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.fav_menu:
+                    Navigation.findNavController(requireView()).navigate(R.id.action_mainFoodFragment_to_favouriteFoodFragment);
+
+                    int pos1 = ((LinearLayoutManager) Objects.requireNonNull(foodRecyclerView.getLayoutManager())).findFirstVisibleItemPosition();
+                    SharedPreferences sharedPref1 = requireActivity().getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref1.edit();
+                    editor.putInt("rPos", pos1);
+                    editor.apply();
+
+                    break;
+                case R.id.home_menu:
+                    break;
+            }
+            return true;
         });
 
 
@@ -179,5 +214,22 @@ public class MainFoodFragment extends Fragment implements RecyclerViewOnItemClic
         progressBar.setVisibility(View.GONE);
         adapter.clearRecipes();
         refresher.setRefreshing(false);
+    }
+
+    @Override
+    public void onFavImageClick(FoodAdapter.FoodViewHolder holder, int position) {
+
+        if (!favs.contains(recipes.get(position).get_id())){
+            favs.add(recipes.get(position).get_id());
+            holder.favImageView.setImageResource(R.drawable.ic_favorite_red);
+            Toast.makeText(requireContext(), "Added Successfully to Favourite", Toast.LENGTH_SHORT).show();
+            ((MainActivity) requireActivity()).foodViewModel.insertFood(requireContext(), recipes.get(position));
+        }else {
+            favs.remove(recipes.get(position).get_id());
+            holder.favImageView.setImageResource(R.drawable.ic_favorite_grey);
+            Toast.makeText(requireContext(), "Removed From Favorite", Toast.LENGTH_SHORT).show();
+            ((MainActivity) requireActivity()).foodViewModel.deleteFood(requireContext(), recipes.get(position).get_id());
+        }
+
     }
 }

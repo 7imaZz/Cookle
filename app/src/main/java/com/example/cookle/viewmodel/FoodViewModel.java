@@ -1,5 +1,7 @@
 package com.example.cookle.viewmodel;
 
+import android.content.Context;
+import android.util.JsonReader;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -11,6 +13,7 @@ import com.example.cookle.repository.FoodClient;
 import com.example.cookle.pojo.Food;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -42,5 +45,17 @@ public class FoodViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread());
         compositeDisposable.add(observable.subscribe(o-> ingredientsLiveData.setValue(o.getRecipe().getIngredients()), e ->
                 Log.d(TAG, "7i: onError: "+e)));
+    }
+
+    public void insertFood(Context context, Recipe recipe){
+        FoodClient.getInstance().insertFood(context, recipe);
+    }
+
+    public void deleteFood(Context context, String _id){
+        FoodClient.getInstance().deleteFood(context, _id);
+    }
+
+    public List<Recipe> getAllFav(Context context){
+        return FoodClient.getInstance().getAllFav(context);
     }
 }

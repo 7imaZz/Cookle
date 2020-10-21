@@ -1,8 +1,16 @@
 package com.example.cookle.pojo;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "food_table")
 public class Recipe {
 
+    @PrimaryKey()
+    @NonNull
     private String _id;
+
     private String title;
     private String image_url;
     private String publisher;

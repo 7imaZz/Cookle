@@ -2,7 +2,6 @@ package com.example.cookle.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,32 +16,44 @@ import com.example.cookle.R;
 import com.example.cookle.pojo.Recipe;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
 
-    class FoodViewHolder extends RecyclerView.ViewHolder {
+    public class FoodViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView foodImageView;
-        TextView foodTitleTextView, publisherTextView, socialRankTextView;
+        public ImageView foodImageView, favImageView;
+        TextView foodTitleTextView, publisherTextView;
 
         FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImageView = itemView.findViewById(R.id.food_img);
             foodTitleTextView = itemView.findViewById(R.id.food_title_tv);
             publisherTextView = itemView.findViewById(R.id.publish_tv);
-            socialRankTextView = itemView.findViewById(R.id.social_rank_tv);
+            favImageView = itemView.findViewById(R.id.fav_img);
         }
     }
 
 
     private ArrayList<Recipe> recipes = new ArrayList<>();
+    private HashSet<String> favs = new HashSet<>();
     private Context context;
     private RecyclerViewOnItemClick recyclerViewOnItemClick;
+    private FoodRecyclerOnFavImageClick foodRecyclerOnFavImageClick;
+
 
     public FoodAdapter(Context context, RecyclerViewOnItemClick recyclerViewOnItemClick) {
         this.context = context;
         this.recyclerViewOnItemClick = recyclerViewOnItemClick;
     }
+
+    public FoodAdapter(Context context, HashSet<String> favs, RecyclerViewOnItemClick recyclerViewOnItemClick, FoodRecyclerOnFavImageClick foodRecyclerOnFavImageClick) {
+        this.context = context;
+        this.favs = favs;
+        this.recyclerViewOnItemClick = recyclerViewOnItemClick;
+        this.foodRecyclerOnFavImageClick = foodRecyclerOnFavImageClick;
+    }
+
 
     public void setRecipes(ArrayList<Recipe> recipes) {
         this.recipes = recipes;
@@ -65,7 +76,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         holder.foodTitleTextView.setText(recipes.get(position).getTitle());
         holder.publisherTextView.setText(recipes.get(position).getPublisher());
-        holder.socialRankTextView.setText(recipes.get(position).getSocial_rank().intValue()+"");
 
         Glide.with(context)
                 .load(recipes.get(position).getImage_url())
@@ -73,21 +83,27 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                 .placeholder(R.drawable.food_placeholer)
                 .into(holder.foodImageView);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerViewOnItemClick.onItemClick(position);
-            }
-        });
+        if (foodRecyclerOnFavImageClick == null){
+            holder.favImageView.setVisibility(View.GONE);
+        }
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                recyclerViewOnItemClick.onLongItemClick(position);
-                return true;
+        for (int i=0; i<recipes.size(); i++){
+            if (favs.contains(recipes.get(position).get_id())){
+                holder.favImageView.setImageResource(R.drawable.ic_favorite_red);
+            }else {
+                holder.favImageView.setImageResource(R.drawable.ic_favorite_grey);
             }
+        }
+        holder.favImageView.setOnClickListener(v -> foodRecyclerOnFavImageClick.onFavImageClick(holder, position));
+
+        holder.itemView.setOnClickListener(v -> recyclerViewOnItemClick.onItemClick(position));
+
+        holder.itemView.setOnLongClickListener(v -> {
+            recyclerViewOnItemClick.onLongItemClick(position);
+            return true;
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -97,6 +113,5 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public void clearRecipes(){
         recipes.clear();
     }
-
 
 }

@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.cookle.R;
 import com.example.cookle.network.InternetConnection;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -70,6 +72,7 @@ public class FoodDetailsFragment extends Fragment {
         foodSocialRankTextView = requireView().findViewById(R.id.social_rank_details_tv);
         ingredientsTextView = requireView().findViewById(R.id.ingredients_tv);
 
+        ((MainActivity)requireActivity()).bottomNavigationView.setVisibility(View.GONE);
 
         setupViews(imageUrl, foodTitle, socialRank, publisher);
         onBackButtonClicked(view);
@@ -108,4 +111,6 @@ public class FoodDetailsFragment extends Fragment {
         foodSocialRankTextView.setText(socialRank);
         foodPublisherTextView.setText(publisher);
     }
+
+
 }

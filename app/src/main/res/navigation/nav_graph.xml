@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainFoodFragment_to_foodDetailsFragment"
             app:destination="@id/foodDetailsFragment" />
+        <action
+            android:id="@+id/action_mainFoodFragment_to_favouriteFoodFragment"
+            app:destination="@id/favouriteFoodFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodDetailsFragment"
@@ -21,6 +24,15 @@
         tools:layout="@layout/fragment_food_details" >
         <action
             android:id="@+id/action_foodDetailsFragment_to_mainFoodFragment"
+            app:destination="@id/mainFoodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouriteFoodFragment"
+        android:name="com.example.cookle.ui.FavouriteFoodFragment"
+        android:label="fragment_favourite_food"
+        tools:layout="@layout/fragment_favourite_food" >
+        <action
+            android:id="@+id/action_favouriteFoodFragment_to_mainFoodFragment"
             app:destination="@id/mainFoodFragment" />
     </fragment>
 </navigation>
