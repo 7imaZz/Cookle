@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.cookle.R;
 import com.example.cookle.pojo.Recipe;
 
@@ -79,6 +80,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         Glide.with(context)
                 .load(recipes.get(position).getImage_url())
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .fitCenter()
                 .placeholder(R.drawable.food_placeholer)
                 .into(holder.foodImageView);
